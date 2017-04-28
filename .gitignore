@@ -105,3 +105,11 @@ buildNumber.properties
 .cvsignore
 */.cvsignore
 
+/.idea/
+.idea/compiler.xml
+.idea/copyright/
+.idea/encodings.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/openlayer-test.iml
+/.idea/vcs.xml
