@@ -40,7 +40,7 @@
         target: 'map',
         layers: [
             new ol.layer.Tile({
-                preload: 4,
+                preload: 10,
                 source: new ol.source.OSM()
             })
         ],
