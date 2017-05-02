@@ -15,7 +15,9 @@
     <li><a href="animation.jsp">查看动画</a><br></li>
     <li><a href="bing-maps.jsp">Bing地图</a><br></li>
     <li><a href="custom-controls.jsp">显示如何创建自定义控件</a><br></li>
-    <li><a href="custom-icon.jsp">显示如何创建自定义控件</a><br></li>
+    <li><a href="custom-controls-layer-switch.html">图层切换</a><br></li>
+    <li><a href="custom-icon.jsp">自定义图标</a><br></li>
+    <li><a href="icon.html">图标标注点</a><br></li>
     <li><a href="custom-interactions.jsp">自定义交互</a><br></li>
     <li><a href="draw-and-modify-features.jsp">画点线面</a><br></li>
     <li><a href="draw-features.jsp">绘制插件</a><br></li>
@@ -24,7 +26,13 @@
     <li><a href="feature-animation.jsp">自定义动画</a><br></li>
     <li><a href="xyz-esri.jsp">xyz-esri</a><br></li>
     <li><h4><a href="load-local-tile.jsp">load-local-tile</a><br></h4></li>
+    <li><a href="popup.jsp">弹出框</a><br></li>
+    <li><a href="vector-layer.html">矢量图层</a><br></li>
 </ol>
+<h4>OpenLayers3案例</h4>
+<ol>
+    <li><a href="openlayers3-init-map.jsp">加载地图</a><br></li>
 
+</ol>
 </body>
 </html>

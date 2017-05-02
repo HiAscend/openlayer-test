@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>vector-layer</title>
+    <link rel="stylesheet" href="resources/frame/openlayers/css/ol.css" type="text/css">
+    <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+    <script src="resources/frame/openlayers/js/ol-debug.js"></script>
+
+    <script src="resources/frame/jquery/jquery-2.2.4.js"></script>
+    <link rel="stylesheet" href="resources/frame/bootstrap-3.3.7-dist/css/bootstrap.css">
+    <script src="resources/frame/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+
+    <style>
+        #map {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+<div id="map" class="map"><div id="popup"></div></div>
+<script>
+    var iconFeature = new ol.Feature({
+        geometry: new ol.geom.Point([0, 0]),
+        name: 'Null Island,大坏蛋',
+        population: 4000,
+        rainfall: 500
+    });
+
+    var iconStyle = new ol.style.Style({
+        image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+            anchor: [0.5, 46],
+            anchorXUnits: 'fraction',
+            anchorYUnits: 'pixels',
+            src: 'https://openlayers.org/en/v4.1.0/examples/data/icon.png'
+        }))
+    });
+    //设置样式
+    iconFeature.setStyle(iconStyle);
+
+    //定义Vector 的Source
+    var vectorSource = new ol.source.Vector({
+        features: [iconFeature]
+    });
+    //定义Vector
+    var vectorLayer = new ol.layer.Vector({
+        source: vectorSource
+    });
+    //定义光栅图层
+    var rasterLayer = new ol.layer.Tile({
+        source: new ol.source.TileJSON({
+            url: 'https://api.tiles.mapbox.com/v3/mapbox.geography-class.json?secure',
+            crossOrigin: ''
+        })
+    });
+    //定义map
+    var map = new ol.Map({
+        layers: [rasterLayer, vectorLayer],
+        target: document.getElementById('map'),
+        view: new ol.View({
+            center: [0, 0],
+            zoom: 3
+        })
+    });
+
+    var element = document.getElementById('popup');
+    var popup = new ol.Overlay({
+        element: element,
+        positioning: 'bottom-center',
+        stopEvent: false,
+        offset: [0, -50]
+    });
+    map.addOverlay(popup);
+
+    // display popup on click
+    map.on('click', function(evt) {
+        var feature = map.forEachFeatureAtPixel(evt.pixel,function(feature) {
+                    return feature;
+                });
+        if (feature) {
+            var coordinates = feature.getGeometry().getCoordinates();
+            popup.setPosition(coordinates);
+            $(element).popover({
+                'placement': 'top',
+                'html': true,
+                'content': feature.get('name')
+            });
+            $(element).popover('show');
+        } else {
+            $(element).popover('destroy');
+        }
+    });
+
+    // change mouse cursor when over marker
+    map.on('pointermove', function(e) {
+        if (e.dragging) {
+            $(element).popover('destroy');
+            return;
+        }
+        var pixel = map.getEventPixel(e.originalEvent);
+        var hit = map.hasFeatureAtPixel(pixel);
+        map.getTarget().style.cursor = hit ? 'pointer' : '';
+    });
+
+</script>
+</body>
+</html>
