@@ -28,6 +28,9 @@
     <li><h4><a href="load-local-tile.jsp">load-local-tile</a><br></h4></li>
     <li><a href="popup.jsp">弹出框</a><br></li>
     <li><a href="vector-layer.html">矢量图层</a><br></li>
+    <li><a href="feature-move-animation.html">标记移动动画</a><br></li>
+    <li><a href="render-geometry.html">将集合渲染到画布</a><br></li>
+    <li><a href="semi-transparent-layer.html">半透明层</a><br></li>
 </ol>
 <h4>OpenLayers3案例</h4>
 <ol>

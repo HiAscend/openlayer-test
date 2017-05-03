@@ -16,17 +16,53 @@
 <body>
 <div id="map" class="map"></div>
 <script>
-    /*var map = new NewLocalTilesMap(
-            'map',
-            15,
-            115.4224,
-            117.5070,
-            39.4574,
-            41.0504,
-            'resources/tiles',
-            256,
-            256
-    );*/
+    var styles = {
+        'route': new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                width: 6, color: [237, 212, 0, 0.8]
+            })
+        }),
+        'icon': new ol.style.Style({
+            image: new ol.style.Icon({
+                anchor: [0.5, 1],
+                src: 'https://openlayers.org/en/v4.1.0/examples/data/icon.png'
+            })
+        }),
+        'geoMarker': new ol.style.Style({
+            image: new ol.style.Circle({
+                radius: 7,
+                snapToPixel: false,
+                fill: new ol.style.Fill({color: 'black'}),
+                stroke: new ol.style.Stroke({
+                    color: 'white', width: 2
+                })
+            })
+        })
+    };
+    var pointList = [
+        [115, 40],
+        [114, 40],
+        [113, 40],
+        [102, 40]
+    ];
+    var lineString = new ol.geom.LineString(pointList,'XY');
+    var routeFeature = new ol.Feature({
+        type: 'route',
+        geometry: lineString
+    });
+    var routeVectorLayer = new ol.layer.Vector({
+        source: new ol.source.Vector({
+            features: [routeFeature]
+        }),
+        style: function (feature) {
+            // hide geoMarker if animation is active
+//            if (animating && feature.get('type') === 'geoMarker') {
+//                return null;
+//            }
+            return styles[feature.get('type')];
+        }
+    });
+
     var attribution = new ol.Attribution({
         html: 'Tiles © <a href="https://services.arcgisonline.com/ArcGIS/' +
         'rest/services/World_Topo_Map/MapServer">ArcGIS</a>'
@@ -40,17 +76,32 @@
                     attributions: [attribution],
                     url: 'http://localhost:8080/resources/map/city/{z}/{x}/{y}.png'
                 })
-            })
+            }),
+            routeVectorLayer
         ],
         view: new ol.View({
-            center: ol.proj.fromLonLat([116, 40],'EPSG:3857'),
+            center: ol.proj.fromLonLat([116, 40]),
 //            center: ol.proj.fromLonLat([116, 40],'EPSG:4326'),
-            zoom: 4
+            zoom: 6,
+            maxZoom: 8,
+            minZoom: 5,
+            extent: [11588560.105894227, 3580577.211859674, 14085910.694027465, 5745273.852895829]
         }),
-        controls:ol.control.defaults().extend([
-                new ol.control.FullScreen(),
-                new ol.control.MousePosition()
+        controls: ol.control.defaults().extend([
+            new ol.control.FullScreen(),
+            new ol.control.MousePosition()
         ])
+    });
+    /**
+     * Add a click handler to the map to render the popup.
+     */
+    map.on('singleclick', function (evt) {
+        var coordinate = evt.coordinate;
+        var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(
+                coordinate, 'EPSG:3857', 'EPSG:4326'));
+        console.log('hdms:' + hdms);
+        var xy = ol.coordinate.toStringXY(coordinate, 9);
+        console.log('xy:' + xy);
     });
 </script>
 </body>
