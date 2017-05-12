@@ -31,6 +31,7 @@
     <li><a href="feature-move-animation.html">标记移动动画</a><br></li>
     <li><a href="render-geometry.html">将集合渲染到画布</a><br></li>
     <li><a href="semi-transparent-layer.html">半透明层</a><br></li>
+    <li><a href="vector-labels.html">矢量标签</a><br></li>
 </ol>
 <h4>OpenLayers3案例</h4>
 <ol>
