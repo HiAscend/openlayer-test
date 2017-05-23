@@ -82,9 +82,14 @@
         source: new ol.source.Vector({
             features: [routeFeature]
         }),
-        style: function (feature) {
+        style: new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                width: 6, color: [237, 212, 0, 0.8]
+            })
+        })
+       /* style: function (feature) {
             return styles[feature.get('type')];
-        }
+        }*/
     });
 
     var map = new ol.Map({

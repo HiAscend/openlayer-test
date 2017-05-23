@@ -12,4 +12,6 @@ public class Test {
         BigDecimal result = longitude.divide(base);
         System.out.println("result = " + result);
     }
+
+
 }
