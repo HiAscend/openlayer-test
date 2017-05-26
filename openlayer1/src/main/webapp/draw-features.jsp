@@ -23,13 +23,22 @@
         <option value="Circle">Circle</option>
         <option value="None">None</option>
     </select>
+    <button onclick="getSomething()">获取数据</button>
 </form>
 <script>
     var raster = new ol.layer.Tile({
         source: new ol.source.OSM()
     });
 
-    var source = new ol.source.Vector({wrapX: false});
+    //测试
+    var destFeature = new ol.Feature({
+        name: 'testFeature'
+    });
+
+    var source = new ol.source.Vector({
+        wrapX: false,
+        features:[destFeature]
+    });
 
     var vector = new ol.layer.Vector({
         source: source
@@ -46,15 +55,21 @@
 
     var typeSelect = document.getElementById('type');
 
+
+
+
+
     var draw; // global so we can remove it later
     function addInteraction() {
         var value = typeSelect.value;
         if (value !== 'None') {
             draw = new ol.interaction.Draw({
+                features:[destFeature],
                 source: source,
                 type: /** @type {ol.geom.GeometryType} */ (typeSelect.value)
             });
             map.addInteraction(draw);
+            draw.on('drawend',drawEndCallBack,this);
         }
     }
 
@@ -68,6 +83,23 @@
     };
 
     addInteraction();
+
+    //回调
+    function drawEndCallBack(event) {
+        var destFeature = event.feature;
+        var coordinates = destFeature.getGeometry().getCoordinates();
+        var list = [];
+        for (var i=0;i<coordinates[0].length;i++){
+            list.push(ol.proj.transform(coordinates[0][i], 'EPSG:3857', 'EPSG:4326'));
+        }
+        console.log(JSON.stringify(list));
+//        map.removeInteraction(draw);
+    }
+
+    function getSomething() {
+//        source.clear();
+        source.removeFeature(destFeature);
+    }
 </script>
 </body>
 </html>

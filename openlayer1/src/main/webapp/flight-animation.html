@@ -55,10 +55,11 @@
     var pointStyle2 = new ol.style.Style({
         image:  new ol.style.Icon({
             anchor: [0.5, 0.5],
+            size:[32,32],
             src: '../resources/image/uav.png'
         })
     });
-
+    pointStyle2.getImage().load();
     /*var flightsSource;
      var addLater = function (feature, timeout) {
      window.setTimeout(function () {
@@ -237,7 +238,7 @@
                 // only draw the lines for which the animation has not finished yet
                 var coordinates = feature.getGeometry().getCoordinates();
                 var elapsedTime = frameState.time - feature.get('start');
-                var elapsedPoints = elapsedTime * 0.01;
+                var elapsedPoints = elapsedTime * 0.001;
                 if (elapsedPoints >= coordinates.length) {
                     feature.set('finished', true);
                 }
@@ -292,7 +293,7 @@
 
 
     var currentPointFeature = new ol.Feature({
-        geometry: new ol.geom.Point(ol.proj.transform([116.315573, 40.042844], 'EPSG:4326', 'EPSG:3857'))
+//        geometry: new ol.geom.Point(ol.proj.transform([116.315573, 40.042844], 'EPSG:4326', 'EPSG:3857'))
     });
     var pointSourceVector = new ol.source.Vector({
         features: [currentPointFeature]
