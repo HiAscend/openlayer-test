@@ -88,7 +88,7 @@
             })
         })
        /* style: function (feature) {
-            return styles[feature.get('type')];
+            return styles[feature.get('type')]  ;
         }*/
     });
 

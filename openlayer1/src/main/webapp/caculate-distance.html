@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>根据经纬度计算距离</title>
+    <link rel="stylesheet" href="resources/frame/openlayers/css/ol.css" type="text/css">
+    <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+    <script src="resources/frame/jquery/jquery-1.12.4.js"></script>
+    <script src="resources/frame/openlayers/js/ol-debug.js"></script>
+    <script src="resources/frame/openlayers/plugin/arc.js"></script>
+
+    <link href='resources/frame/openlayers/plugin/mapbox.css' rel='stylesheet'/>
+    <script src='resources/frame/openlayers/plugin/mapbox.js'></script>
+    <script src='resources/frame/openlayers/plugin/turf.min.js'></script>
+    <style></style>
+</head>
+<body>
+<h1>Hello!</h1>
+
+<script>
+    //    纬度 Latitude: 1 deg = 110852 m
+    //    经度 Longitude: 1 deg = 111320*cos(lat) m
+    //    同一经线上,相差一纬度约为 110852 米
+    //    同一纬线上,相差一经度约为 111320*cos(lat) 米 (lat为该纬线的纬度)
+
+    var start = [116.353112, 40.043136];
+    var speed = 15;
+    //速度15m/s
+    //飞行过程：向南飞5秒，转向西飞4，转向西北飞6秒，转向北飞3秒，转向东飞6秒，结束；   //西北是指正西北，即西偏北45度，
+    //起始点：[116.353112, 40.043136]
+    //翻译：南5s,经纬度：[116.353112, 40.042459]
+    //翻译：西4s,经纬度：[116.352339, 40.042459]
+    //翻译：西北飞6s,经纬度：[116.353158, 40.043033]
+    //翻译：北飞3s,经纬度：[116.353158, 40.043438]
+    //翻译：东飞6s,经纬度：[116.354315, 40.043438]
+
+    //飞行过程：向东北飞5秒，转向北飞5，转向西北飞5秒，转向西飞5秒，转向西南飞5秒，转向南飞5秒，转向东南飞5秒，结束；
+    //起始点：[116.353112, 40.041236]
+    //翻译：东北飞5s,经纬度：[116.353794, 40.041714]
+    //翻译：北飞5s,经纬度：[116.353794, 40.042390]
+    //翻译：西北飞5s,经纬度：[116.353112, 40.042868]
+    //翻译：西南飞5s,经纬度：[116.352430, 40.042390]
+    //翻译：南飞5s,经纬度：[116.352430, 40.041714]
+    //翻译：东南飞5s,经纬度：[116.353112, 40.041236]
+
+
+    var EARTH_RADIUS = 6378137.0;    //单位M
+    var PI = Math.PI;
+    //计算弧度
+    function getRad(d) {
+        return d * PI / 180.0;
+    }
+    var longitude = 116.353794;
+    var latitude = 40.042390;
+    var retLongitude = longitude;
+    var retLatitude = latitude + 75 / 110852;
+    console.log(retLatitude);
+
+    console.log(getFlatternDistance(latitude, longitude, retLatitude, retLongitude));
+
+    //    console.log(speed*6*Math.sin(getRad(45)));  //63.639610
+
+    console.log('原经度：' + longitude);
+    console.log('原纬度：' + latitude);
+    console.log('经度：' + retLongitude);
+    console.log('纬度：' + retLatitude);
+    /**
+     * approx distance between two points on earth ellipsoid
+     * @param {Object} lat1
+     * @param {Object} lng1
+     * @param {Object} lat2
+     * @param {Object} lng2
+     */
+    function getFlatternDistance(lat1, lng1, lat2, lng2) {
+        var f = getRad((lat1 + lat2) / 2);
+        var g = getRad((lat1 - lat2) / 2);
+        var l = getRad((lng1 - lng2) / 2);
+
+        var sg = Math.sin(g);
+        var sl = Math.sin(l);
+        var sf = Math.sin(f);
+
+        var s, c, w, r, d, h1, h2;
+        var a = EARTH_RADIUS;
+        var fl = 1 / 298.257;
+
+        sg = sg * sg;
+        sl = sl * sl;
+        sf = sf * sf;
+
+        s = sg * (1 - sl) + (1 - sf) * sl;
+        c = (1 - sg) * (1 - sl) + sf * sl;
+
+        w = Math.atan(Math.sqrt(s / c));
+        r = Math.sqrt(s * c) / w;
+        d = 2 * w * a;
+        h1 = (3 * r - 1) / 2 / c;
+        h2 = (3 * r + 1) / 2 / s;
+
+        return d * (1 + fl * (h1 * sf * (1 - sg) - h2 * (1 - sf) * sg));
+    }
+
+    var results = [];
+    for (var i = 1; i < 7; i++) {
+        console.info(i);
+        var lo = 116.352339 + 136.4 * 0.000001 * i;
+        var la = 40.042460 + 95.6 * 0.000001 * i;
+        results.push([lo, la]);
+    }
+    console.log(JSON.stringify(results));
+
+
+    /*var arr = [];
+    for (var j = 0; j < 17536; j++) {
+        arr.push(j);
+    }
+    console.log(JSON.stringify(arr));*/
+    //1 [116.353112, 40.041236]
+    //2 [116.3532484, 40.0413316]
+</script>
+
+</body>
+</html>

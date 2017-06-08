@@ -33,11 +33,19 @@
     <li><a href="semi-transparent-layer.html">半透明层</a><br></li>
     <li><a href="vector-labels.html">矢量标签</a><br></li>
     <li><a href="flight-animation.html">飞行动画</a><br></li>
+    <li><a href="draw-line.html">画线</a><br></li>
+    <li><a href="caculate-distance.html">根据经纬度计算距离</a><br></li>
+    <li><a href="single-select-demo.html">根据经纬度计算距离</a><br></li>
 </ol>
 <h4>OpenLayers3案例</h4>
 <ol>
     <li><a href="openlayers3-init-map.jsp">加载地图</a><br></li>
 
 </ol>
+
+<script>
+
+
+</script>
 </body>
 </html>

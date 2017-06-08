@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>画线</title>
+    <link rel="stylesheet" href="resources/frame/openlayers/css/ol.css" type="text/css">
+    <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+    <script src="resources/frame/jquery/jquery-1.12.4.js"></script>
+    <script src="resources/frame/openlayers/js/ol-debug.js"></script>
+    <script src="resources/frame/openlayers/plugin/arc.js"></script>
+
+    <link href='resources/frame/openlayers/plugin/mapbox.css' rel='stylesheet'/>
+    <script src='resources/frame/openlayers/plugin/mapbox.js'></script>
+    <script src='resources/frame/openlayers/plugin/turf.min.js'></script>
+    <style></style>
+</head>
+<body>
+<div id="map" class="map"></div>
+<button onclick="stopDraw()">停止</button>
+<button onclick="clearVector()">清空</button>
+<script>
+    var stylesTrack = {
+        'route': new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                width: 5,
+                color: '#DC143C'
+            })
+        })
+    };
+    var map = new ol.Map({
+        layers: [
+            new ol.layer.Tile({
+                source: new ol.source.OSM()
+            })
+        ],
+        target: 'map',
+        controls: ol.control.defaults({
+            attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+                collapsible: false
+            })
+        }),
+        view: new ol.View({
+            center: ol.proj.transform([116.315573, 40.042844], 'EPSG:4326', 'EPSG:3857'),
+            zoom: 14
+        })
+    });
+
+    var pointList = [];
+//    pointList.push(ol.proj.transform([116.315573, 40.042844], 'EPSG:4326', 'EPSG:3857'));
+//    pointList.push(ol.proj.transform([116.315573, 40.043044], 'EPSG:4326', 'EPSG:3857'));
+    pointList.push([116.315573, 40.042844]);
+    pointList.push([116.315573, 40.043044]);
+
+    var lineSourceVector;
+    var lineLayerVector;
+
+    function drawLine() {
+        var startCoord = pointList[1];
+        var endCoord = [startCoord[0]+Math.random()*0.001,startCoord[1]+Math.random()*0.001];
+        pointList.shift();
+        pointList.push(endCoord);
+        var lineString = new ol.geom.LineString(pointList);
+        lineString.transform(ol.proj.get('EPSG:4326'), ol.proj.get('EPSG:3857'));
+        var currentLineFeature = new ol.Feature({
+            geometry: lineString,
+            finished: false,
+            type: 'route'
+        });
+        if (lineSourceVector == null) {
+            lineSourceVector = new ol.source.Vector({
+                features: [currentLineFeature]
+            });
+        }else {
+            lineSourceVector.addFeature(currentLineFeature);
+        }
+        if (lineLayerVector==null){
+            lineLayerVector = new ol.layer.Vector({
+                source: lineSourceVector,
+                style: stylesTrack['route']
+            });
+            map.addLayer(lineLayerVector);
+        }
+    }
+
+
+    var genInterval = setInterval(drawLine, 1000);
+    console.log(genInterval);
+
+    function stopDraw() {
+        window.clearInterval(genInterval);
+    }
+
+    function clearVector() {
+        map.removeLayer(lineLayerVector);
+    }
+
+</script>
+
+</body>
+</html>
